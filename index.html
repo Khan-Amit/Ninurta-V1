@@ -67,6 +67,10 @@
             font-size: 0.9rem;
             color: #ccddf8;
         }
+        .features ul {
+            margin: 0;
+            padding-left: 20px;
+        }
         .features li {
             margin: 8px 0;
         }
@@ -74,6 +78,11 @@
             font-size: 0.7rem;
             color: #5b6b8e;
             margin-top: 20px;
+        }
+        .version {
+            font-size: 0.7rem;
+            color: #6b8cae;
+            margin-top: 12px;
         }
         code {
             background: #010a1a;
@@ -90,8 +99,10 @@
 
     <p style="color:#aac9ff;">The transfer direction change software.<br>Your phone becomes a node of the new economy.</p>
 
-    <a href="#" id="downloadLink" class="download-btn" style="background: #3b6ea0; pointer-events: none; opacity: 0.6;">⬇️ APK Coming Soon</a>
-    <p style="font-size:0.75rem; color:#88aaff;">First build in progress – check back later for direct install</p>
+    <!-- DIRECT APK DOWNLOAD LINK - REPLACE WITH YOUR REAL GITHUB RELEASE LINK -->
+    <a href="https://github.com/khan-amit/Ninurta-V1/releases/download/v1.0/ninurta-v1.apk" class="download-btn" id="downloadLink">
+        ⬇️ Install Ninurta‑V1 APK
+    </a>
 
     <div class="features">
         <ul>
@@ -107,11 +118,14 @@
         By the waters of Enki · Ninurta‑V1 is open source<br>
         <code>One click install · No Play Store needed</code>
     </div>
+    <div class="version">
+        Version 1.0 · Direct APK download
+    </div>
 </div>
 
 <script>
-    // Later we will replace the "Coming Soon" with a real APK link from GitHub Releases
-    // For now, it shows a friendly message.
+    // Optional: Log to console that page is ready
+    console.log("Ninurta-V1 landing page ready - APK link active");
 </script>
 </body>
 </html>
