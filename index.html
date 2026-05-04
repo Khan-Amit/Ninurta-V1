@@ -3,143 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Ninurta-V1 · CSFS Mobile Node</title>
+    <title>Ninurta‑V1 · CSFS Transfer Protocol</title>
     <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
         body {
             background: #0a0f1e;
             font-family: system-ui, -apple-system, 'Segoe UI', monospace;
             margin: 0;
-            padding: 20px;
+            padding: 16px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
-        .card {
+        .container {
             max-width: 550px;
             width: 100%;
             background: #111827cc;
             backdrop-filter: blur(4px);
             border-radius: 48px;
-            padding: 28px 24px 32px;
+            padding: 20px;
             border: 1px solid #2d3a5e;
-            text-align: center;
             box-shadow: 0 20px 35px rgba(0,0,0,0.5);
         }
         h1 {
-            font-size: 2rem;
-            margin: 0 0 8px;
+            font-size: 1.6rem;
+            margin: 0 0 4px;
+            text-align: center;
             background: linear-gradient(135deg, #fff, #7aa2f7);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
         .sub {
+            text-align: center;
             color: #7e8cae;
-            font-size: 0.8rem;
-            margin-bottom: 28px;
-            border-bottom: 1px solid #1f2a44;
-            padding-bottom: 12px;
-            display: inline-block;
+            font-size: 0.7rem;
+            margin-bottom: 20px;
         }
-        .download-btn {
-            display: inline-block;
-            background: #3b6ea0;
-            color: white;
-            padding: 14px 28px;
-            border-radius: 60px;
-            font-size: 1.2rem;
+        .balance {
+            background: #00000066;
+            border-radius: 32px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .balance .label {
+            font-size: 0.7rem;
+            color: #88aaff;
+        }
+        .balance .amount {
+            font-size: 1.8rem;
             font-weight: bold;
-            text-decoration: none;
-            margin: 16px 0;
-            transition: 0.2s;
+            color: #ffdd99;
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            background: #1e2a3e;
             border: none;
+            padding: 10px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
             cursor: pointer;
         }
-        .download-btn:hover {
-            background: #5b8ec0;
-            transform: scale(1.02);
+        .tab-btn.active {
+            background: #3b6ea0;
         }
-        .features {
-            text-align: left;
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        .qr-container {
+            text-align: center;
+            margin: 16px 0;
+        }
+        canvas, img {
+            background: white;
+            padding: 12px;
+            border-radius: 28px;
+            width: 200px;
+            height: 200px;
+        }
+        input, textarea, select {
+            width: 100%;
+            background: #010a1a;
+            border: 1px solid #2f4172;
+            color: #ffdd99;
+            border-radius: 24px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+        button {
+            background: #3b6ea0;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+        button:active { transform: scale(0.97); }
+        .history {
             background: #00000044;
             border-radius: 28px;
-            padding: 16px 20px;
-            margin: 20px 0;
-            font-size: 0.9rem;
-            color: #ccddf8;
+            padding: 12px;
+            margin-top: 16px;
+            max-height: 200px;
+            overflow-y: auto;
         }
-        .features ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        .features li {
-            margin: 8px 0;
+        .history-item {
+            font-size: 0.7rem;
+            padding: 6px;
+            border-bottom: 1px solid #2d3a5e;
+            font-family: monospace;
         }
         .footer {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
+            text-align: center;
+            margin-top: 16px;
             color: #5b6b8e;
-            margin-top: 20px;
-        }
-        .version {
-            font-size: 0.7rem;
-            color: #6b8cae;
-            margin-top: 12px;
-        }
-        .status {
-            font-size: 0.8rem;
-            color: #88aaff;
-            margin-top: 12px;
-            background: #00000044;
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
         }
     </style>
 </head>
 <body>
-<div class="card">
-    <h1>⚡ NINURTA‑V1</h1>
-    <div class="sub">CSFS Mobile Node · Cyclic Seeking File System</div>
+<div class="container">
+    <h1>⨀ NINURTA‑V1</h1>
+    <div class="sub">CSFS Transfer Protocol · No SWIFT · Direct P2P</div>
 
-    <p style="color:#aac9ff;">The transfer direction change software.<br>Your phone becomes a node of the new economy.</p>
+    <div class="balance">
+        <div class="label">💰 CSFS Balance (DEMO)</div>
+        <div class="amount" id="balanceAmount">1,250.00</div>
+        <div class="label">≈ $1,250 USD · 0.025 BTC</div>
+    </div>
 
-    <a href="https://github.com/khan-amit/Ninurta-V1/releases/download/v1.0/ninurta-v1.apk" class="download-btn" id="downloadLink">
-        ⬇️ Install Ninurta‑V1 APK
-    </a>
-    <div class="status">✓ Direct install · No Play Store needed</div>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="send">📤 Send</button>
+        <button class="tab-btn" data-tab="receive">📥 Receive</button>
+        <button class="tab-btn" data-tab="crypto">₿ Crypto Wallet</button>
+    </div>
 
-    <div class="features">
-        <ul>
-            <li>🌀 <strong>CSFS core</strong> – circular, desire‑driven storage</li>
-            <li>⚙️ <strong>Ternary slicing</strong> – desire levels (0.0–1.0)</li>
-            <li>✍️ <strong>Write / Read slices</strong> – append data, browse ring</li>
-            <li>🧹 <strong>Auto‑pruning</strong> – low‑desire data expires</li>
-            <li>🌐 <strong>Peer sync (future)</strong> – decentralised, instant settlement</li>
-        </ul>
+    <!-- Send Tab -->
+    <div id="sendPane" class="tab-pane active">
+        <input type="text" id="sendAddress" placeholder="Recipient CSFS ID / Phone / Email">
+        <input type="number" id="sendAmount" placeholder="Amount (USD)">
+        <button id="sendBtn">✈️ Send Payment</button>
+        <div class="history" id="sendHistory">
+            <div class="history-item">💸 Sent $50.00 to +8801712345678 · 2 min ago</div>
+            <div class="history-item">💸 Sent $120.00 to alice@csfs.net · 1 hour ago</div>
+        </div>
+    </div>
+
+    <!-- Receive Tab -->
+    <div id="receivePane" class="tab-pane">
+        <div class="qr-container">
+            <canvas id="qrCanvas"></canvas>
+        </div>
+        <p style="text-align:center; font-size:0.8rem;">Scan with any CSFS app</p>
+        <input type="text" id="myCsfsId" value="ninurta@csfs.net" readonly>
+        <button id="copyIdBtn">📋 Copy CSFS ID</button>
+        <div class="history" id="receiveHistory">
+            <div class="history-item">✅ Received $200.00 from john_doe · 30 min ago</div>
+            <div class="history-item">✅ Received $75.00 from bd_shop · yesterday</div>
+        </div>
+    </div>
+
+    <!-- Crypto Wallet Tab -->
+    <div id="cryptoPane" class="tab-pane">
+        <p style="font-size:0.8rem; color:#aac9ff;">Send cryptocurrency directly – no SWIFT, no middleman</p>
+        <select id="cryptoType">
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="USDT">Tether (USDT)</option>
+            <option value="CSFS">CSFS Coin (Testnet)</option>
+        </select>
+        <input type="text" id="cryptoAddress" placeholder="Recipient wallet address">
+        <input type="number" id="cryptoAmount" placeholder="Amount">
+        <button id="cryptoSendBtn">₿ Send Crypto</button>
+        <div class="history" id="cryptoHistory">
+            <div class="history-item">₿ Sent 0.01 BTC to bc1q... · 5 min ago</div>
+            <div class="history-item">₿ Sent 50 USDT to 0x4B2... · 2 hours ago</div>
+        </div>
     </div>
 
     <div class="footer">
-        By the waters of Enki · Ninurta‑V1 is open source<br>
-        <code>Tap Install · One click · No registration</code>
-    </div>
-    <div class="version">
-        Version 1.0 · Direct APK download
+        ⚡ Instant settlement · No SWIFT · Powered by CSFS cyclic ledger
     </div>
 </div>
 
 <script>
-    console.log("Ninurta-V1 landing page ready - APK link active");
-    // Check if the link is valid (optional, just for debugging)
-    fetch('https://github.com/khan-amit/Ninurta-V1/releases/download/v1.0/ninurta-v1.apk', { method: 'HEAD' })
-        .then(response => {
-            if (!response.ok) {
-                console.warn('APK not yet available at the release link');
-            } else {
-                console.log('APK is ready to download');
-            }
-        })
-        .catch(() => console.warn('Could not check APK availability'));
+    // Simple QR code generator (using QRCode.js library dynamically)
+    function loadQRCode() {
+        return new Promise((resolve) => {
+            if (window.QRCode) { resolve(); return; }
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js';
+            script.onload = () => resolve();
+            document.head.appendChild(script);
+        });
+    }
+
+    let currentQR = null;
+
+    async function updateQR() {
+        await loadQRCode();
+        const canvas = document.getElementById('qrCanvas');
+        canvas.innerHTML = '';
+        const csfsId = document.getElementById('myCsfsId').value;
+        const qrData = `csfs://pay?to=${encodeURIComponent(csfsId)}&amount=request`;
+        new QRCode(canvas, {
+            text: qrData,
+            width: 200,
+            height: 200,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+        });
+    }
+
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panes = {
+        send: document.getElementById('sendPane'),
+        receive: document.getElementById('receivePane'),
+        crypto: document.getElementById('cryptoPane')
+    };
+
+    tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.getAttribute('data-tab');
+            tabs.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            Object.values(panes).forEach(pane => pane.classList.remove('active'));
+            panes[tab].classList.add('active');
+            if (tab === 'receive') updateQR();
+        });
+    });
+
+    // Copy CSFS ID
+    document.getElementById('copyIdBtn')?.addEventListener('click', () => {
+        const idInput = document.getElementById('myCsfsId');
+        idInput.select();
+        document.execCommand('copy');
+        alert('CSFS ID copied to clipboard');
+    });
+
+    // Send simulation (bank transfer)
+    document.getElementById('sendBtn')?.addEventListener('click', () => {
+        const addr = document.getElementById('sendAddress').value;
+        const amount = parseFloat(document.getElementById('sendAmount').value);
+        if (!addr || isNaN(amount)) { alert('Enter recipient and amount'); return; }
+        let balanceEl = document.getElementById('balanceAmount');
+        let currentBalance = parseFloat(balanceEl.innerText.replace(',', ''));
+        if (amount > currentBalance) { alert('Insufficient balance'); return; }
+        let newBalance = currentBalance - amount;
+        balanceEl.innerText = newBalance.toFixed(2);
+        const historyDiv = document.getElementById('sendHistory');
+        const newEntry = document.createElement('div');
+        newEntry.className = 'history-item';
+        newEntry.innerHTML = `💸 Sent $${amount.toFixed(2)} to ${addr} · just now`;
+        historyDiv.insertBefore(newEntry, historyDiv.firstChild);
+        document.getElementById('sendAmount').value = '';
+        document.getElementById('sendAddress').value = '';
+        alert(`✅ Sent $${amount.toFixed(2)} to ${addr}\nInstant settlement via CSFS. No SWIFT fee.`);
+    });
+
+    // Crypto send
+    document.getElementById('cryptoSendBtn')?.addEventListener('click', () => {
+        const cryptoType = document.getElementById('cryptoType').value;
+        const addr = document.getElementById('cryptoAddress').value;
+        const amount = parseFloat(document.getElementById('cryptoAmount').value);
+        if (!addr || isNaN(amount)) { alert('Enter address and amount'); return; }
+        let balanceEl = document.getElementById('balanceAmount');
+        let currentBalance = parseFloat(balanceEl.innerText.replace(',', ''));
+        if (amount > currentBalance) { alert('Insufficient balance (convert from USD)'); return; }
+        let newBalance = currentBalance - amount;
+        balanceEl.innerText = newBalance.toFixed(2);
+        const historyDiv = document.getElementById('cryptoHistory');
+        const newEntry = document.createElement('div');
+        newEntry.className = 'history-item';
+        newEntry.innerHTML = `₿ Sent ${amount} ${cryptoType} to ${addr.substring(0,8)}... · just now`;
+        historyDiv.insertBefore(newEntry, historyDiv.firstChild);
+        document.getElementById('cryptoAddress').value = '';
+        document.getElementById('cryptoAmount').value = '';
+        alert(`✅ Crypto sent via CSFS bridge. No SWIFT, no bank delay.`);
+    });
+
+    // Initial QR generation
+    updateQR();
 </script>
 </body>
 </html>
