@@ -53,6 +53,8 @@
             text-decoration: none;
             margin: 16px 0;
             transition: 0.2s;
+            border: none;
+            cursor: pointer;
         }
         .download-btn:hover {
             background: #5b8ec0;
@@ -84,11 +86,14 @@
             color: #6b8cae;
             margin-top: 12px;
         }
-        code {
-            background: #010a1a;
-            padding: 2px 8px;
+        .status {
+            font-size: 0.8rem;
+            color: #88aaff;
+            margin-top: 12px;
+            background: #00000044;
+            display: inline-block;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-family: monospace;
         }
     </style>
 </head>
@@ -99,10 +104,10 @@
 
     <p style="color:#aac9ff;">The transfer direction change software.<br>Your phone becomes a node of the new economy.</p>
 
-    <!-- DIRECT APK DOWNLOAD LINK - REPLACE WITH YOUR REAL GITHUB RELEASE LINK -->
     <a href="https://github.com/khan-amit/Ninurta-V1/releases/download/v1.0/ninurta-v1.apk" class="download-btn" id="downloadLink">
         ⬇️ Install Ninurta‑V1 APK
     </a>
+    <div class="status">✓ Direct install · No Play Store needed</div>
 
     <div class="features">
         <ul>
@@ -116,7 +121,7 @@
 
     <div class="footer">
         By the waters of Enki · Ninurta‑V1 is open source<br>
-        <code>One click install · No Play Store needed</code>
+        <code>Tap Install · One click · No registration</code>
     </div>
     <div class="version">
         Version 1.0 · Direct APK download
@@ -124,8 +129,17 @@
 </div>
 
 <script>
-    // Optional: Log to console that page is ready
     console.log("Ninurta-V1 landing page ready - APK link active");
+    // Check if the link is valid (optional, just for debugging)
+    fetch('https://github.com/khan-amit/Ninurta-V1/releases/download/v1.0/ninurta-v1.apk', { method: 'HEAD' })
+        .then(response => {
+            if (!response.ok) {
+                console.warn('APK not yet available at the release link');
+            } else {
+                console.log('APK is ready to download');
+            }
+        })
+        .catch(() => console.warn('Could not check APK availability'));
 </script>
 </body>
 </html>
