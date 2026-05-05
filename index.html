@@ -60,6 +60,18 @@
             font-weight: bold;
             color: #ffdd99;
         }
+        .download-btn {
+            display: block;
+            background: #4caf50;
+            color: white;
+            text-align: center;
+            padding: 14px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 16px 0;
+            font-size: 1.1rem;
+        }
         .tabs {
             display: flex;
             gap: 6px;
@@ -145,6 +157,11 @@
 <div class="container">
     <h1>⨀ NINURTA‑V1</h1>
     <div class="sub">CSFS Transfer Protocol · No SWIFT · Direct P2P</div>
+
+    <!-- APK DOWNLOAD BUTTON -->
+    <a href="https://github.com/khan-amit/Ninurta-V1/releases/download/v1.0/ninurta-v1.apk" class="download-btn">
+        📱 DOWNLOAD APP (APK)
+    </a>
 
     <div class="balance">
         <div class="label">💰 CSFS Balance (DEMO)</div>
@@ -286,55 +303,71 @@
     }
 
     // ========== EVENT HANDLERS ==========
-    document.getElementById('sendBtn')?.addEventListener('click', async () => {
-        let addr = document.getElementById('sendAddress').value;
-        let amount = parseFloat(document.getElementById('sendAmount').value);
-        if (!addr || isNaN(amount)) { alert('Enter recipient and amount'); return; }
-        let balanceEl = document.getElementById('balanceAmount');
-        let bal = parseFloat(balanceEl.innerText.replace(',', ''));
-        if (amount > bal) { alert('Insufficient balance'); return; }
-        let ok = await sendWithSecurity(addr, amount);
-        if (ok) {
+    let sendBtn = document.getElementById('sendBtn');
+    if (sendBtn) {
+        sendBtn.addEventListener('click', async () => {
+            let addr = document.getElementById('sendAddress').value;
+            let amount = parseFloat(document.getElementById('sendAmount').value);
+            if (!addr || isNaN(amount)) { alert('Enter recipient and amount'); return; }
+            let balanceEl = document.getElementById('balanceAmount');
+            let bal = parseFloat(balanceEl.innerText.replace(',', ''));
+            if (amount > bal) { alert('Insufficient balance'); return; }
+            let ok = await sendWithSecurity(addr, amount);
+            if (ok) {
+                balanceEl.innerText = (bal - amount).toFixed(2);
+                addHistoryEntry('send', `$${amount.toFixed(2)}`, `to ${addr}`);
+                document.getElementById('sendAmount').value = '';
+                document.getElementById('sendAddress').value = '';
+            }
+        });
+    }
+
+    let cryptoSendBtn = document.getElementById('cryptoSendBtn');
+    if (cryptoSendBtn) {
+        cryptoSendBtn.addEventListener('click', () => {
+            let type = document.getElementById('cryptoType').value;
+            let addr = document.getElementById('cryptoAddress').value;
+            let amount = parseFloat(document.getElementById('cryptoAmount').value);
+            if (!addr || isNaN(amount)) { alert('Enter address and amount'); return; }
+            if (!validateCryptoAddress(addr, type)) { alert(`Invalid ${type} address`); return; }
+            let balanceEl = document.getElementById('balanceAmount');
+            let bal = parseFloat(balanceEl.innerText.replace(',', ''));
+            if (amount > bal) { alert('Insufficient balance'); return; }
             balanceEl.innerText = (bal - amount).toFixed(2);
-            addHistoryEntry('send', `$${amount.toFixed(2)}`, `to ${addr}`);
-            document.getElementById('sendAmount').value = '';
-            document.getElementById('sendAddress').value = '';
-        }
-    });
+            addHistoryEntry('crypto', `${amount} ${type}`, `to ${addr.substring(0,8)}...`);
+            document.getElementById('cryptoAddress').value = '';
+            document.getElementById('cryptoAmount').value = '';
+            alert('Crypto sent (simulated)');
+        });
+    }
 
-    document.getElementById('cryptoSendBtn')?.addEventListener('click', () => {
-        let type = document.getElementById('cryptoType').value;
-        let addr = document.getElementById('cryptoAddress').value;
-        let amount = parseFloat(document.getElementById('cryptoAmount').value);
-        if (!addr || isNaN(amount)) { alert('Enter address and amount'); return; }
-        if (!validateCryptoAddress(addr, type)) { alert(`Invalid ${type} address`); return; }
-        let balanceEl = document.getElementById('balanceAmount');
-        let bal = parseFloat(balanceEl.innerText.replace(',', ''));
-        if (amount > bal) { alert('Insufficient balance'); return; }
-        balanceEl.innerText = (bal - amount).toFixed(2);
-        addHistoryEntry('crypto', `${amount} ${type}`, `to ${addr.substring(0,8)}...`);
-        document.getElementById('cryptoAddress').value = '';
-        document.getElementById('cryptoAmount').value = '';
-        alert('Crypto sent (simulated)');
-    });
+    let startMiningBtn = document.getElementById('startMiningBtn');
+    if (startMiningBtn) {
+        startMiningBtn.addEventListener('click', () => {
+            if (miningInterval) clearInterval(miningInterval);
+            miningInterval = setInterval(mineSlice, 30000);
+            alert('Mining started (simulated)');
+        });
+    }
 
-    document.getElementById('startMiningBtn')?.addEventListener('click', () => {
-        if (miningInterval) clearInterval(miningInterval);
-        miningInterval = setInterval(mineSlice, 30000);
-        alert('Mining started (simulated)');
-    });
-    document.getElementById('stopMiningBtn')?.addEventListener('click', () => {
-        if (miningInterval) clearInterval(miningInterval);
-        miningInterval = null;
-        alert('Mining stopped');
-    });
+    let stopMiningBtn = document.getElementById('stopMiningBtn');
+    if (stopMiningBtn) {
+        stopMiningBtn.addEventListener('click', () => {
+            if (miningInterval) clearInterval(miningInterval);
+            miningInterval = null;
+            alert('Mining stopped');
+        });
+    }
 
-    document.getElementById('copyIdBtn')?.addEventListener('click', () => {
-        let idInput = document.getElementById('myCsfsId');
-        idInput.select();
-        document.execCommand('copy');
-        alert('CSFS ID copied');
-    });
+    let copyIdBtn = document.getElementById('copyIdBtn');
+    if (copyIdBtn) {
+        copyIdBtn.addEventListener('click', () => {
+            let idInput = document.getElementById('myCsfsId');
+            idInput.select();
+            document.execCommand('copy');
+            alert('CSFS ID copied');
+        });
+    }
 
     // QR code (dummy)
     let qrCanvas = document.getElementById('qrCanvas');
